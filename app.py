@@ -15,6 +15,9 @@ app.config['SECRET_KEY'] = "sdkfjghodsfhk"  # Replace with a strong secret key
 db = SQLAlchemy(app)
 # db.init_app(app)
 api = Api(app)
+from flask_cors import CORS
+CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Import the initialization function for the database
 # from app.utils.db import init_db
