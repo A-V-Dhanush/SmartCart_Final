@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c04f53d4-f63d-41ca-b8ea-1999200d7ec0" name="Changes" comment="cart status update">
+    <list default="true" id="c04f53d4-f63d-41ca-b8ea-1999200d7ec0" name="Changes" comment="registerapi status update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
@@ -93,13 +93,22 @@
       <option name="project" value="LOCAL" />
       <updated>1736599262077</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="registerapi status update">
+      <option name="closed" value="true" />
+      <created>1736600932504</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1736600932506</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial" />
     <MESSAGE value="cors update" />
     <MESSAGE value="cart status update" />
-    <option name="LAST_COMMIT_MESSAGE" value="cart status update" />
+    <MESSAGE value="registerapi status update" />
+    <option name="LAST_COMMIT_MESSAGE" value="registerapi status update" />
   </component>
 </project>

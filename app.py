@@ -72,7 +72,7 @@ class UserRegisterAPI(Resource):
         # Hash the password
         hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256')
         # Create a new user
-        new_user = User(name=data['name'], email=data['email'], password=hashed_password)
+        new_user = User(name=data['username'], email=data['email'], password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
 
