@@ -334,7 +334,7 @@ class ScanCartAPI(Resource):
 
 
 class CartAPI(Resource):
-    def get(self):
+    def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('cart_id', type=int, required=True, help='Cart ID is required')
         parser.add_argument('user_id', type=int, required=True, help='User ID is required')
@@ -359,7 +359,19 @@ class CartAPI(Resource):
         return {'status': 'success', 'cart_id': cart.id, 'products': products_data}, 200
 
 
+class cart_status(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('cart_id', type=int, required=True, help='Cart ID is required')
+        parser.add_argument('user_id', type=int, required=True, help='User ID is required')
+        data = parser.parse_args()
 
+        # Fetch cart and its products
+        cart = Cart.query.filter_by(id=data['cart_id'], user_id=data['user_id'], status='active').first()
+        if not cart:
+            return {'status': 'fail', 'message': 'Active cart not found'}, 404
+
+        return { 'cart_id': cart.id, 'status': cart.status}, 200
 
 
 
@@ -372,11 +384,12 @@ api.add_resource(UserRegisterAPI, '/user/register', endpoint='user_register')
 api.add_resource(UserLoginAPI, '/user/login', endpoint='user_login')
 api.add_resource(ScanCartAPI, '/cart/identify', endpoint='scan_cart')
 api.add_resource(CartAPI, '/cart/products', endpoint='cart_products')
-api.add_resource(CheckoutAPI, '/checkout', endpoint='checkout')
+api.add_resource(CheckoutAPI, '/cart/checkout', endpoint='checkout')
 api.add_resource(AddProductAPI, '/cart/add_product', endpoint='add_product')
 api.add_resource(RemoveProductAPI, '/cart/remove_product', endpoint='remove_product')
-
+api.add_resource(cart_status, '/cart/status', endpoint='cart_status')
 # Add resources to API
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
