@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c04f53d4-f63d-41ca-b8ea-1999200d7ec0" name="Changes" comment="cors update">
+    <list default="true" id="c04f53d4-f63d-41ca-b8ea-1999200d7ec0" name="Changes" comment="cart status update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
@@ -22,6 +22,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -84,12 +85,21 @@
       <option name="project" value="LOCAL" />
       <updated>1736260943398</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="cart status update">
+      <option name="closed" value="true" />
+      <created>1736599262077</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1736599262077</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial" />
     <MESSAGE value="cors update" />
-    <option name="LAST_COMMIT_MESSAGE" value="cors update" />
+    <MESSAGE value="cart status update" />
+    <option name="LAST_COMMIT_MESSAGE" value="cart status update" />
   </component>
 </project>

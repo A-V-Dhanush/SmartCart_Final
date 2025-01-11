@@ -60,7 +60,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class UserRegisterAPI(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('name', type=str, required=True, help='Name is required')
+        parser.add_argument('username', type=str, required=True, help='Name is required')
         parser.add_argument('email', type=str, required=True, help='Email is required')
         parser.add_argument('password', type=str, required=True, help='Password is required')
         data = parser.parse_args()
