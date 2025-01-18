@@ -6,6 +6,7 @@ import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, reqparse
+from sqlalchemy.dialects.mysql import BIGINT
 
 app = Flask(__name__)
 
@@ -45,7 +46,7 @@ class Cart(db.Model):
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    cart_id = db.Column(db.Integer, db.ForeignKey('cart.id'), nullable=False)
+    cart_id = db.Column(db.BigInteger, db.ForeignKey('cart.id'), nullable=False)
     product_name = db.Column(db.String(100), nullable=False)
     cost = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, default=1)
@@ -112,7 +113,7 @@ from flask_restful import Resource, reqparse
 class AddProductAPI(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('cart_id', type=int, required=True, help='Cart ID is required')
+        parser.add_argument('cart_id', type=BIGINT, required=True, help='Cart ID is required')
         parser.add_argument('product_id', type=int, required=True, help='Product ID is required')
         parser.add_argument('product_name', type=str, required=True, help='Product name is required')
         parser.add_argument('cost', type=float, required=True, help='Product cost is required')
@@ -314,7 +315,7 @@ from flask_restful import Resource, reqparse
 class ScanCartAPI(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('cart_id', type=int, required=True, help='Cart ID is required')
+        parser.add_argument('cart_id', type=BIGINT, required=True, help='Cart ID is required')
         parser.add_argument('user_id', type=int, required=True, help='User ID is required')
         data = parser.parse_args()
 
@@ -336,7 +337,7 @@ class ScanCartAPI(Resource):
 class CartAPI(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('cart_id', type=int, required=True, help='Cart ID is required')
+        parser.add_argument('cart_id', type=BIGINT, required=True, help='Cart ID is required')
         parser.add_argument('user_id', type=int, required=True, help='User ID is required')
         data = parser.parse_args()
 
@@ -362,7 +363,7 @@ class CartAPI(Resource):
 class cart_status(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('cart_id', type=int, required=True, help='Cart ID is required')
+        parser.add_argument('cart_id', type=BIGINT, required=True, help='Cart ID is required')
         parser.add_argument('user_id', type=int, required=True, help='User ID is required')
         data = parser.parse_args()
 
