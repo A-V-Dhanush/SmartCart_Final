@@ -6,7 +6,6 @@ import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, reqparse
-from sqlalchemy.dialects.mysql import BIGINT
 
 app = Flask(__name__)
 
@@ -43,6 +42,7 @@ class Cart(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     status = db.Column(db.String(20), default="active")  # active, checked_out
     total_amount = db.Column(db.Float, default=0.0)
+    cart_id=db.Column(db.BigInteger, nullable=False)
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -113,7 +113,7 @@ from flask_restful import Resource, reqparse
 class AddProductAPI(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('cart_id', type=BIGINT, required=True, help='Cart ID is required')
+        parser.add_argument('cart_id', type=int, required=True, help='Cart ID is required')
         parser.add_argument('product_id', type=int, required=True, help='Product ID is required')
         parser.add_argument('product_name', type=str, required=True, help='Product name is required')
         parser.add_argument('cost', type=float, required=True, help='Product cost is required')
@@ -121,12 +121,12 @@ class AddProductAPI(Resource):
         data = parser.parse_args()
 
         # Check if the cart exists and is active
-        cart = Cart.query.filter_by(id=data['cart_id'], status='active').first()
+        cart = Cart.query.filter_by(cart_id=data['cart_id'], status='active').first()
         if not cart:
             return {'status': 'fail', 'message': 'Active cart not found'}, 404
 
         # Add or update product in the cart
-        product = Product.query.filter_by(cart_id=cart.id, id=data['product_id']).first()
+        product = Product.query.filter_by(cart_id=cart.cart_id, id=data['product_id']).first()
         if product:
             product.quantity += data['quantity']  # Update quantity if product already exists
         else:
@@ -135,7 +135,7 @@ class AddProductAPI(Resource):
                 product_name=data['product_name'],
                 cost=data['cost'],
                 quantity=data['quantity'],
-                cart_id=cart.id
+                cart_id=cart.cart_id
             )
             db.session.add(product)
 
@@ -151,12 +151,12 @@ class RemoveProductAPI(Resource):
         data = parser.parse_args()
 
         # Check if the cart exists and is active
-        cart = Cart.query.filter_by(id=data['cart_id'], status='active').first()
+        cart = Cart.query.filter_by(cart_id=data['cart_id'], status='active').first()
         if not cart:
             return {'status': 'fail', 'message': 'Active cart not found'}, 404
 
         # Remove product from the cart
-        product = Product.query.filter_by(cart_id=cart.id, id=data['product_id']).first()
+        product = Product.query.filter_by(cart_id=cart.cart, id=data['product_id']).first()
         if not product:
             return {'status': 'fail', 'message': 'Product not found in cart'}, 404
 
@@ -182,12 +182,12 @@ class CheckoutAPI(Resource):
         data = parser.parse_args()
 
         # Check if the cart exists and is active
-        cart = Cart.query.filter_by(id=data['cart_id'], user_id=data['customer_id'], status='active').first()
+        cart = Cart.query.filter_by(cart_id=data['cart_id'], user_id=data['customer_id'], status='active').first()
         if not cart:
             return {'status': 'fail', 'message': 'Active cart not found'}, 404
 
         # Calculate total amount
-        products = Product.query.filter_by(cart_id=cart.id).all()
+        products = Product.query.filter_by(cart_id=cart.cart_id).all()
         if not products:
             return {'status': 'fail', 'message': 'Cart is empty'}, 400
 
@@ -315,7 +315,7 @@ from flask_restful import Resource, reqparse
 class ScanCartAPI(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('cart_id', type=BIGINT, required=True, help='Cart ID is required')
+        parser.add_argument('cart_id', type=int, required=True, help='Cart ID is required')
         parser.add_argument('user_id', type=int, required=True, help='User ID is required')
         data = parser.parse_args()
 
@@ -325,28 +325,28 @@ class ScanCartAPI(Resource):
             return {'status': 'fail', 'message': 'User not found'}, 404
 
         # Check if cart exists or create a new one
-        cart = Cart.query.filter_by(id=data['cart_id'], user_id=data['user_id'], status='active').first()
+        cart = Cart.query.filter_by(cart_id=data['cart_id'], user_id=data['user_id'], status='active').first()
         if not cart:
-            cart = Cart(id=data['cart_id'], user_id=data['user_id'])
+            cart = Cart(cart_id=data['cart_id'], user_id=data['user_id'])
             db.session.add(cart)
             db.session.commit()
 
-        return {'status': 'success', 'message': 'Cart linked successfully', 'cart_id': cart.id}, 200
+        return {'status': 'success', 'message': 'Cart linked successfully', 'cart_id': cart.cart_id}, 200
 
 
 class CartAPI(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('cart_id', type=BIGINT, required=True, help='Cart ID is required')
+        parser.add_argument('cart_id', type=int, required=True, help='Cart ID is required')
         parser.add_argument('user_id', type=int, required=True, help='User ID is required')
         data = parser.parse_args()
 
         # Fetch cart and its products
-        cart = Cart.query.filter_by(id=data['cart_id'], user_id=data['user_id'], status='active').first()
+        cart = Cart.query.filter_by(cart_id=data['cart_id'], user_id=data['user_id'], status='active').first()
         if not cart:
             return {'status': 'fail', 'message': 'Active cart not found'}, 404
 
-        products = Product.query.filter_by(cart_id=cart.id).all()
+        products = Product.query.filter_by(cart_id=cart.cart_id).all()
         products_data = [
             {
                 'product_id': product.id,
@@ -357,22 +357,22 @@ class CartAPI(Resource):
             for product in products
         ]
 
-        return {'status': 'success', 'cart_id': cart.id, 'products': products_data}, 200
+        return {'status': 'success', 'cart_id': cart.cart_id, 'products': products_data}, 200
 
 
 class cart_status(Resource):
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('cart_id', type=BIGINT, required=True, help='Cart ID is required')
+        parser.add_argument('cart_id', type=int, required=True, help='Cart ID is required')
         parser.add_argument('user_id', type=int, required=True, help='User ID is required')
         data = parser.parse_args()
 
         # Fetch cart and its products
-        cart = Cart.query.filter_by(id=data['cart_id'], user_id=data['user_id'], status='active').first()
+        cart = Cart.query.filter_by(cart_id=data['cart_id'], user_id=data['user_id'], status='active').first()
         if not cart:
             return {'status': 'fail', 'message': 'Active cart not found'}, 404
 
-        return { 'cart_id': cart.id, 'status': cart.status}, 200
+        return { 'cart_id': cart.cart_id, 'status': cart.status}, 200
 
 
 
